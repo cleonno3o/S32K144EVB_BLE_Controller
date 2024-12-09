@@ -11,7 +11,8 @@
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp">
         <TextView
             android:id="@+id/name_category_textview"
             android:layout_width="0dp"
@@ -75,7 +76,7 @@
             app:layout_constraintTop_toTopOf="@id/rss_category_textview"
             app:layout_constraintEnd_toEndOf="parent"
             android:textSize="20dp"
-            android:text="@{bleScanItem.rss}"
+            android:text="@{String.valueOf(bleScanItem.rss)}"
             tools:text="-73"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -24,6 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ble_search_box_edittext"
             app:layout_constraintBottom_toTopOf="@id/ble_scan_stop_button"
+            android:scrollbars="vertical"
             tools:listitem="@layout/item_ble"
             />
         <androidx.appcompat.widget.AppCompatButton

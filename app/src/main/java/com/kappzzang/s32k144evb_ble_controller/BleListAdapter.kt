@@ -1,5 +1,7 @@
 package com.kappzzang.s32k144evb_ble_controller
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -9,12 +11,14 @@ import com.kappzzang.s32k144evb_ble_controller.data.BleScanItem
 import com.kappzzang.s32k144evb_ble_controller.databinding.ItemBleBinding
 
 class BleListAdapter(
-    private val onScanItemClickListener: () -> Unit
+    private val context: Context
+//    private val onScanItemClickListener: () -> Unit
 ) : ListAdapter<BleScanItem, BleListAdapter.ScanItemViewHolder>(
     object :
         DiffUtil.ItemCallback<BleScanItem>() {
-        override fun areItemsTheSame(oldItem: BleScanItem, newItem: BleScanItem): Boolean =
-            oldItem.uuid == newItem.uuid
+        override fun areItemsTheSame(oldItem: BleScanItem, newItem: BleScanItem): Boolean {
+            return oldItem.uuid == newItem.uuid
+        }
 
         override fun areContentsTheSame(oldItem: BleScanItem, newItem: BleScanItem): Boolean =
             oldItem == newItem
@@ -22,28 +26,31 @@ class BleListAdapter(
 ) {
     inner class ScanItemViewHolder(
         private val binding: ItemBleBinding,
-        private val onScanItemClickListener: () -> Unit
+//        private val onScanItemClickListener: () -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener {
-                onScanItemClickListener()
+//                onScanItemClickListener()
             }
         }
 
         fun bind(bleScanItem: BleScanItem) {
             binding.bleScanItem = bleScanItem
+            Log.d("ADAPTER", "bind")
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScanItemViewHolder {
         val viewHolder = ScanItemViewHolder(
             ItemBleBinding.inflate(
-            LayoutInflater.from(parent.context),
+            LayoutInflater.from(context),
             parent,
             false
-        ),
-            onScanItemClickListener
         )
+//            onScanItemClickListener
+        )
+//        Log.d("ADAPTER", "bind")
+
         return viewHolder
     }
 
