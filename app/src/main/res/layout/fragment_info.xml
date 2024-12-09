@@ -9,13 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="INFO"
-            android:textSize="40dp"
-            />
-        <TextView
             android:id="@+id/main_camera_title_textview"
             android:layout_width="0dp"
             android:layout_height="50dp"
