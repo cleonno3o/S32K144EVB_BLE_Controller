@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/info_fragment"
+        android:icon="@drawable/baseline_android_24"
+        android:title="@string/info"
+        />
+    <item
+        android:id="@+id/ble_fragment"
+        android:icon="@drawable/baseline_bluetooth_24"
+        android:title="@string/bluetooth"
+        />
+</menu>

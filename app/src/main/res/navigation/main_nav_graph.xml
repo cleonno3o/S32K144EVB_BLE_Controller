@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/info_fragment">
+    <fragment
+        android:id="@+id/info_fragment"
+        android:name="com.kappzzang.s32k144evb_ble_controller.InfoFragment"
+        android:label="정보"
+        tools:layout="@layout/fragment_info"
+        />
+    <fragment
+        android:id="@+id/ble_fragment"
+        android:name="com.kappzzang.s32k144evb_ble_controller.BleFragment"
+        android:label="블루투스"
+        tools:layout="@layout/fragment_ble"
+        />
+</navigation>

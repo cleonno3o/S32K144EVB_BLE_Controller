@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">S32K144EVB_BLE_Controller</string>
+    <string name="info">정보</string>
+    <string name="bluetooth">블루투스</string>
 </resources>
