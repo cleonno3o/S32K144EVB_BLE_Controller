@@ -54,7 +54,7 @@
             app:layout_constraintTop_toTopOf="@id/uuid_category_textview"
             app:layout_constraintEnd_toEndOf="parent"
             android:textSize="20dp"
-            android:text="@{bleScanItem.uuid}"
+            android:text="@{bleScanItem.address}"
             tools:text="12345-13211-12313"/>
 
         <TextView

@@ -10,10 +10,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import android.Manifest
+import android.annotation.SuppressLint
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.pm.PackageManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -24,6 +30,7 @@ import com.kappzzang.s32k144evb_ble_controller.databinding.FragmentBleBinding
 
 class BleFragment : Fragment() {
     private lateinit var binding: FragmentBleBinding
+    private lateinit var bluetoothAdapter: BluetoothAdapter
     private lateinit var bleScanner: BluetoothLeScanner
     private var bleScanList = mutableListOf<BleScanItem>()
     private lateinit var bleListAdapter: BleListAdapter
@@ -62,6 +69,7 @@ class BleFragment : Fragment() {
             results?.forEach { result ->
                 result?.let {
                     val device = it.device
+                    Log.d(TAG,it.device.name.toString())
                     val deviceName = device.name ?: "Unknown Device"
                     val deviceAddress = device.address
                     val rssi = it.rssi
@@ -89,12 +97,9 @@ class BleFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initButton()
         initBluetooth()
-        bleListAdapter = BleListAdapter(requireContext())
-        binding.bleResultRecyclerview.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = bleListAdapter
-            bleListAdapter.submitList(bleScanList)
-        }
+        initAdapter()
+        initSearchBox()
+
     }
 
     override fun onPause() {
@@ -106,21 +111,78 @@ class BleFragment : Fragment() {
         super.onResume()
         Log.d(TAG, bleScanList.size.toString())
     }
+    @SuppressLint("MissingPermission")
+    private fun connectToDevice(bleScanItem: BleScanItem) {
+        val device = bluetoothAdapter.getRemoteDevice(bleScanItem.address)
+        device.createBond()
+        device?.let {
+//            it.create
+            it.connectGatt(requireContext(), false, @SuppressLint("MissingPermission")
+            object : BluetoothGattCallback() {
+                override fun onConnectionStateChange(
+                    gatt: BluetoothGatt?,
+                    status: Int,
+                    newState: Int
+                ) {
+                    super.onConnectionStateChange(gatt, status, newState)
+                }
+            })
+        }
+    }
     private fun addDeviceToList(name: String, uuid: String, rss: Int) {
-        if (bleScanList.none {it.uuid == uuid}) {
+        if (bleScanList.none {it.address == uuid}) {
             bleScanList.add(
                 BleScanItem(name, uuid, rss)
             )
         } else {
             bleScanList = bleScanList.map {
-                if (it.uuid == uuid) it.copy(rss = rss) else it
+                if (it.address == uuid) it.copy(rss = rss) else it
             }.toMutableList()
         }
-        bleListAdapter.submitList(bleScanList.toMutableList())
-        Log.d(TAG, bleListAdapter.currentList.size.toString())
+        val filterText = binding.bleSearchBoxEdittext.text.toString()
+        if (filterText.isEmpty())
+            bleListAdapter.submitList(bleScanList.toMutableList())
+        else
+            bleListAdapter.submitList(
+                bleScanList.filter {
+                    it.name.contains(filterText, ignoreCase = true)
+                }.toMutableList()
+            )
+//        Log.d(TAG, bleListAdapter.currentList.size.toString())
+    }
+
+    private fun initSearchBox() {
+        binding.bleSearchBoxEdittext.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s.toString().isEmpty()) {
+                    bleListAdapter.submitList(bleScanList.toMutableList())
+                } else {
+                    bleListAdapter.submitList(
+                        bleScanList.filter {
+                            it.name.contains(s.toString(), ignoreCase = true)
+                        }.toMutableList()
+                    )
+                }
+            }
+        })
+    }
+    private fun initAdapter() {
+        bleListAdapter = BleListAdapter(requireContext())
+        binding.bleResultRecyclerview.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = bleListAdapter
+            bleListAdapter.submitList(bleScanList)
+        }
     }
     private fun initBluetooth() {
         val bluetoothManager = requireContext().getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        bluetoothAdapter = bluetoothManager.adapter
         if (!bluetoothManager.adapter.isEnabled) {
             Toast.makeText(requireContext(), "블루투스가 꺼져있어요", Toast.LENGTH_SHORT).show()
         } else {

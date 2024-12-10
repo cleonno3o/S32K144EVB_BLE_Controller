@@ -1,7 +1,6 @@
 package com.kappzzang.s32k144evb_ble_controller
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -17,7 +16,7 @@ class BleListAdapter(
     object :
         DiffUtil.ItemCallback<BleScanItem>() {
         override fun areItemsTheSame(oldItem: BleScanItem, newItem: BleScanItem): Boolean {
-            return oldItem.uuid == newItem.uuid
+            return oldItem.address == newItem.address
         }
 
         override fun areContentsTheSame(oldItem: BleScanItem, newItem: BleScanItem): Boolean =
@@ -36,7 +35,7 @@ class BleListAdapter(
 
         fun bind(bleScanItem: BleScanItem) {
             binding.bleScanItem = bleScanItem
-            Log.d("ADAPTER", "bind")
+//            Log.d("ADAPTER", "bind")
         }
     }
 
